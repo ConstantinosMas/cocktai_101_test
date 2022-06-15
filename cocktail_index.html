@@ -1,0 +1,581 @@
+
+
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Drink Database</title>
+
+</head>
+
+<body>
+  <!-- {{> header}} -->
+
+  <!-- {{> random_drink}} -->
+  <!-- {{> home_menu}} -->
+  <!-- {{> by_letter}} -->
+  <!-- {{> ingredient}} -->
+  <!-- {{> home}} -->
+  <!-- {{> search_results}} -->
+  <!-- {{#if islogged_in}}
+  {{> form}}
+  {{/if}}
+
+  {{> myCocktails}} -->
+
+
+
+
+  <!-- Modal for web drinks -->
+      <div class="modal fade" id="drinkModal" tabindex="-1" role="dialog" aria-labelledby="drinkModalLabel">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          {{#with current_drink}}
+          <div class="modal-header text-center">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="drinkModalLabel">{{title}}</h4>
+          </div>
+          <div class="modal-body">
+            <img style="width:100%;" class="img-fluid float-right" src={{img_src}} />
+            <h3>Glass: {{glass}}</h3>
+            <h3>Ingredients:</h3>
+            <p>
+              <ul>
+                {{#each ingredients}}
+                {{#if ingr}}
+                <li>
+                  {{ingr}}{{#if measure}}: {{measure}} {{/if}}
+                  </li>
+                  {{/if}}
+                {{/each}}
+                </ul>
+
+              {{ingr}} {{measure}}
+
+              </p>
+            <h3>Instructions:</h3> <p>
+              {{instructions}}
+              </p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+          {{/with}}
+        </div>
+      </div>
+    </div>
+    <!-- End modal for web drinks -->
+
+
+  <!-- Modal for user drinks -->
+
+  <div class="modal fade" id="userdrinkModal" tabindex="-1" role="dialog" aria-labelledby="userdrinkModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      {{#with current_user_drink}}
+      <div class="modal-header text-center">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="userdrinkModalLabel">{{title}}</h4>
+      </div>
+      <div class="modal-body">
+        <img style="width:100%;" class="img-fluid float-right" src={{img_src}} />
+        <h3>Glass: {{glass}}</h3>
+        <h3>Ingredients: {{ingredients}}</h3>
+        <h3>Instructions:</h3> <p>
+          {{instructions}}
+          </p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+      {{/with}}
+    </div>
+  </div>
+  </div>
+
+  <!-- End modal for user drinks -->
+
+</body>
+
+
+
+<template name="ApplicationLayout">
+  {{> yield "navbar"}}
+  {{> yield "main"}}
+  {{> yield "extra"}}
+  {{> yield "footer"}}
+</template>
+
+
+
+
+
+<template name="home_menu">
+  <span class="menu-circle"><span class="menu-circle"></span></span>
+<div class="wrap">
+  <a href="by_letter_list"><div></div></a>
+  <a class="js-random" href="random_cocktail"><div></div></a>
+  <a href="#"><div></div></a>
+  <a href="ingr_search"><div></div></a>
+  <a href="search"><div></div></a>
+</div>
+</template>
+
+
+
+
+
+<template name="header">
+
+  <nav class="navbar navbar-default navbar-inverse">
+    <div class="container-fluid">
+      <!-- Brand and toggle get grouped for better mobile display -->
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="/">Brand</a>
+      </div>
+
+      <!-- Collect the nav links, forms, and other content for toggling -->
+      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+        <ul class="nav navbar-nav navbar-right">
+
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Search<span class="caret"></span></a>
+            <ul class="dropdown-menu" style="background-color:#1c1c1c;">
+              <li><a class="js-mycocktails" href="/search" style="color:#cfcfcf;">Search by name</a></li>
+              <li><a href="/ingr_search" style="color:#cfcfcf;">Search an ingredient</a></li>
+              <li><a class="js-random" href="/random_cocktail" style="color:#cfcfcf;">Get a random cocktail</a></li>
+              <!-- <li role="separator" class="divider"></li>
+              <li><a href="#">Separated link</a></li> -->
+            </ul>
+          </li>
+          {{#if islogged_in}}
+
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Me<span class="caret"></span></a>
+            <ul class="dropdown-menu" style="background-color:#1c1c1c;">
+              <li><a class="js-mycocktails" style="color:#cfcfcf;" href="/my_drinks">My cocktails</a></li>
+              <li><a class="js-mycocktails" style="color:#cfcfcf;" href="/new_drink">Add new cocktail</a></li>
+              <!-- <li><a href="#">Another action</a></li>
+              <li><a href="#">Something else here</a></li>
+              <li role="separator" class="divider"></li>
+              <li><a href="#">Separated link</a></li> -->
+            </ul>
+          </li>
+
+          {{/if}}
+
+          <li><a href="#">{{> loginButtons align="right"}}</a></li>
+        </ul>
+      </div><!-- /.navbar-collapse -->
+    </div><!-- /.container-fluid -->
+  </nav>
+
+</template>
+
+
+
+<template name="by_letter">
+
+  <div id="YanMenu" class="sidenav">
+  <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">
+
+  &times;</a>
+
+  <div class="row">
+
+    {{#each letters}}
+    <div class="col-xs-6 col-md-4">
+      <a class="letter-list" href="#">{{this}}</a>
+      </div>
+  {{/each}}
+
+</div>
+</div>
+
+<div id="main">
+
+
+  <span style="font-size:30px;cursor:pointer" onclick="openNav()">
+
+  &#9776; Alphabet list</span>
+
+</div>
+
+<script>
+function openNav() {
+  document.getElementById("YanMenu").style.width = "250px";
+  document.getElementById("main").style.marginLeft = "250px";
+  document.body.style.backgroundColor = "rgba(0,0,0,0.4)";
+}
+
+function closeNav() {
+  document.getElementById("YanMenu").style.width = "0";
+  document.getElementById("main").style.marginLeft= "0";
+  document.body.style.backgroundColor = "white";
+}
+</script>
+
+<div class="container text-center">
+  <h1>Cocktails by first letter</h1>
+
+  <div class="row">
+
+    {{#each letter_list}}
+
+    <div style="padding:10rem 0 0 0;" class="col-xs-6 col-md-3 col-lg-2">
+
+    <a href="#"><img class="img-fluid result-img result_thumbnail" src={{strDrinkThumb}} /> </a>
+    <h2>{{strDrink}}</h2>
+
+    </div>
+
+    {{/each}}
+
+  </div>
+  </div>
+</template>
+
+
+<template name="ingredient">
+  <div class="container text-center">
+    <h1 class="whiter-title">Find an ingredient</h1>
+    <h5><em class="whiter-title">Curious no more</em></h5>
+
+
+
+  <form>
+
+  <div class="wrapper-searchbar" style="margin-top:2rem;">
+  <div class="searchBar form-group">
+    <!-- <input id="searchQueryInput" type="text" name="drink_search" placeholder="Search" class="form-control" /> -->
+    <input id="searchQueryInput" name="ingr_search" type="text" class="form-control" placeholder="Search">
+    <a href="ingr_search"><button id="searchQuerySubmit" type="submit" class="js-ingr-search">
+      <svg style="width:24px;height:24px" viewBox="0 0 24 24"><path fill="#666666" d="M9.5,3A6.5,6.5 0 0,1 16,9.5C16,11.11 15.41,12.59 14.44,13.73L14.71,14H15.5L20.5,19L19,20.5L14,15.5V14.71L13.73,14.44C12.59,15.41 11.11,16 9.5,16A6.5,6.5 0 0,1 3,9.5A6.5,6.5 0 0,1 9.5,3M9.5,5C7,5 5,7 5,9.5C5,12 7,14 9.5,14C12,14 14,12 14,9.5C14,7 12,5 9.5,5Z" />
+      </svg>
+    </button> </a>
+  </div>
+</div>
+
+</form>
+
+<div class="row">
+  {{#if returned_ingr}}
+  {{#each returned_ingr}}
+  <div class="col-xs-12">
+    <h1 class="ingr-res">{{strIngredient}}</h1>
+    <h4 class="ingr-res">Alcoholic: {{strAlcohol}}</h4>
+    <h4 class="ingr-res">Alcoholic Volume: {{strABV}}%</h4>
+    <h4 class="ingr-res">Description:<p class="ingr-res" style="text-align:justify;">
+      {{strDescription}}
+    </p></h4>
+    </div>
+  {{/each}}
+  {{else}}
+  <div class="col-xs-12">
+    <h4>No such ingredient found.</h4>
+    </div>
+  {{/if}}
+  </div>
+
+</div>
+
+</template>
+
+
+<template name="random_drink">
+<div class="container">
+
+  <div class="container text-center" style="padding-bottom:10rem;">
+    <h1 class="whiter-title">Random cocktail</h1>
+    <h5><em class="whiter-title">Feeling adventurous? How about a..</em></h5>
+    </div>
+
+
+  <div class="row">
+    {{#each chosen_random_drink}}
+    <div class="col-xs-12 col-md-12 col-lg-6 random-img">
+      <!-- <img class="random-thumb" src={{strDrinkThumb}} /> -->
+
+      <div class="flip-container" ontouchstart="this.classList.toggle('hover');">
+      	<div class="flipper">
+      		<div class="front">
+      		<img class="random-thumb" src={{strDrinkThumb}} />
+      		</div>
+      		<div class="back">
+      			<img class="random-thumb" src={{strDrinkThumb}} />
+      		</div>
+      	</div>
+      </div>
+      </div>
+
+      <div class="col-xs-12 col-md-12 col-lg-6 text-center">
+        <h1 class="random-title random-info">{{strDrink}}</h1>
+        <h3 class="random-info">Glass:</h3><p>{{strGlass}}</p>
+        <h3 class="random-info">Category:</h3><p>{{strCategory}}</p>
+        <h3 class="random-info">Ingredients:</h3>
+        <p>
+          <ul class="random-ingr-list">
+            {{#each chosen_random_ingr}}
+            {{#if ingr}}
+            <li>
+              {{ingr}}{{#if measure}}: {{measure}} {{/if}}
+              </li>
+              {{/if}}
+            {{/each}}
+            </ul>
+          {{ingr}} {{measure}}
+          </p>
+        <h3 class="random-info">Instructions:</h3>
+        <p>
+          {{strInstructions}}
+          </p>
+
+        </div>
+
+    {{/each}}
+    </div>
+
+    <!-- <div class="container text-center" style="padding-top:6rem;">
+  <button type="button" class="btn btn-default js-random">Get me one</button>
+  </div> -->
+<div class="container text-center" style="padding:6rem 0 4rem 0;">
+<button class="btn fifth js-random">Another!</button>
+  </div>
+  </div>
+
+
+
+
+</template>
+
+
+
+
+<template name="home">
+
+
+   <h1 class="search-title">Find your next passion</h1>
+   <h5 class="search-title-sub">Search by name</h5>
+   <form>
+
+
+   <div class="wrapper-searchbar">
+   <div class="searchBar form-group">
+     <!-- <input id="searchQueryInput" type="text" name="drink_search" placeholder="Search" class="form-control" /> -->
+     <input id="searchQueryInput" name="drink_search" type="text" class="form-control" placeholder="Search">
+     <a href="/search/results"><button id="searchQuerySubmit" type="submit" class="js-search">
+       <svg style="width:24px;height:24px" viewBox="0 0 24 24"><path fill="#666666" d="M9.5,3A6.5,6.5 0 0,1 16,9.5C16,11.11 15.41,12.59 14.44,13.73L14.71,14H15.5L20.5,19L19,20.5L14,15.5V14.71L13.73,14.44C12.59,15.41 11.11,16 9.5,16A6.5,6.5 0 0,1 3,9.5A6.5,6.5 0 0,1 9.5,3M9.5,5C7,5 5,7 5,9.5C5,12 7,14 9.5,14C12,14 14,12 14,9.5C14,7 12,5 9.5,5Z" />
+       </svg>
+     </button></a>
+   </div>
+ </div>
+ </form>
+</template>
+
+
+
+
+<template name="search_results">
+  <div class="container text-center results-title">
+    <h1 style="font-size:50px;">Results</h1>
+    <h4><em>You searched for "{{searched_for}}"</em></h4>
+
+    </div>
+
+
+
+<div class="row text-center">
+
+  <div class="col-xs-12 col-md-6">
+      <h2 style="padding-bottom:5rem;">Web results</h2>
+      {{#if results}}
+
+      <div class="row">
+        {{#each drinks}}
+
+        <div class="col-xs-4 col-md-4">
+        <a href="#"><img class="img-fluid result-img result_thumbnail" src={{strDrinkThumb}} /> </a>
+        <h2>{{strDrink}}</h2>
+        </div>
+
+        {{/each}}
+
+    </div>
+    {{else}}
+
+    <h4><em>No drink found.</em></h4>
+
+    {{/if}}
+    </div>
+
+
+
+    <div class="col-xs-12 col-md-6">
+        <h2 style="padding-bottom:5rem;">User results</h2>
+        {{#if user_results}}
+
+        <div class="row">
+          {{#each user_results}}
+
+          <div class="col-xs-4 col-md-4">
+          <a href="#"><img class="img-fluid result-img user_result_thumbnail" src={{img_src}} /> </a>
+          <h2>{{title}}</h2>
+          </div>
+
+          {{/each}}
+
+      </div>
+
+      {{else}}
+      <h4><em>No drink found.</em></h4>
+        {{/if}}
+
+      </div>
+
+  </div>
+
+
+</template>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<template name="form">
+  <h1 style="text-align:center;">Add your own cocktail!</h1>
+
+<form id="add-form" class="topBefore">
+
+		  <input name="new_drink_title" type="text" class="form-control" id="" placeholder="Enter the cocktail name" required>
+		  <input name="new_drink_img" type="url" class="form-control" id="inputPassword3" placeholder="Paste a URL address pointing to a picture of the drink" required>
+      <input name="new_drink_glass" type="text" class="form-control" id="" placeholder="Enter the type of glass for this cocktail" required>
+      <input name="new_drink_ingr" type="text" class="form-control" id="" placeholder="Enter the ingredients, their measure, seperated by commas" required>
+      <textarea name="new_drink_instr" class="form-control" rows="3" placeholder="Enter the instructions for making the drink" required></textarea>
+      <input class="js-add-drink" id="add-submit" type="submit" value="Add!">
+
+</form>
+</template>
+
+
+
+
+<template name="myCocktails">
+  <div class="container text-center" style="padding-bottom:10rem;">
+    <h1><em class="whiter-title">My drinks</em></h1>
+    </div>
+  <div class="row text-center">
+
+    {{#if own_drinks}}
+
+    {{#each own_drinks}}
+    <div class="col-xs-12 col-md-6">
+      <div class="container">
+        <img style="width:200px; border-radius: 50%;" class="img-fluid" src={{img_src}} />
+        <!-- <a href="#"><img style="width:200px; border-radius: 50%;" class="img-fluid user_result_thumbnail" src={{img_src}} /> </a> -->
+        </div>
+
+      <!-- <button type="button" class="btn btn-primary">Edit</button> <button type="button" class="btn btn-danger js-delete">Delete</button> -->
+      </div>
+
+      <div class="col-xs-12 col-md-6">
+        <h2>{{title}}</h2>
+        <h2>Glass: </h2> <p>
+          {{glass}}
+        </p>
+        <h2>Ingredients: </h2> <p>
+          {{ingredients}}
+        </p>
+        <h2>Instructions:</h2>  <p>
+          {{instructions}}
+        </p>
+        <button type="button" class="btn btn-primary js-edit-initial">Edit</button>
+        <button type="button" class="btn btn-danger js-delete-initial">Delete</button>
+        </div>
+
+      <div class="col-xs-12">
+        <hr />
+        </div>
+    {{/each}}
+
+    {{else}}
+
+    <div class="col-xs-12">
+      <h6>Drinks you add will appear here.</h6>
+      </div>
+
+    {{/if}}
+
+    </div>
+
+
+<!-- Modal for delete confirmation -->
+
+    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content text-center" style="background-color:#2b2b2b; ">
+        <div class="modal-header text-center">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title whiter-title" id="userdrinkModalLabel">Confirm</h4>
+        </div>
+        <div class="modal-body">
+        <h3 class="whiter-title">Are you sure you want to delete this entry?</h3>
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger js-delete" data-dismiss="modal">Delete</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+        </div>
+      </div>
+    </div>
+    </div>
+
+    <!-- End modal -->
+
+
+<!-- Editing modal -->
+{{#with editing_drink}}
+    <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content text-center" style="background-color:#2b2b2b; ">
+        <div class="modal-header text-center">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title whiter-title" id="userdrinkModalLabel">Edit</h4>
+        </div>
+        <div class="modal-body">
+
+          <form id="add-form" class="topBefore">
+
+          		  <input name="edit_drink_title" type="text" class="form-control whiter-title" id="" value={{title}} required>
+          		  <input name="edit_drink_img" type="url" class="form-control whiter-title" id=""  value={{img_src}} required>
+                <input name="edit_drink_glass" type="text" class="form-control whiter-title" id="" value={{glass}} required>
+                <input name="edit_drink_ingr" type="text" class="form-control whiter-title" id="" value={{ingredients}} required>
+                <textarea name="edit_drink_instr" class="form-control whiter-title" rows="3" value={{instructions}} required></textarea>
+
+          </form>
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary js-edit" data-dismiss="modal">Confirm</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+        </div>
+      </div>
+    </div>
+    </div>
+{{/with}}
+    <!-- Editing Modal -->
+
+</template>
