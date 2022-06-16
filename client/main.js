@@ -1,3 +1,5 @@
+Meteor.subscribe("localdrinks");
+
 Router.configure({
   layoutTemplate: 'ApplicationLayout'
 });
@@ -267,7 +269,6 @@ Template.home.events({
     });
     Meteor.call("getUserDrinks", drink_query, function(error, result){
       if (!error){
-        console.log(result);
         Session.set("user_drinks", result);
       }
 

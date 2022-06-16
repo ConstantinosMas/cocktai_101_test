@@ -64,3 +64,7 @@ Meteor.methods({
 Accounts.config({
     sendVerificationEmail: true
   });
+
+Meteor.publish("localdrinks", function(){
+  return Local_drinks.find();
+});
