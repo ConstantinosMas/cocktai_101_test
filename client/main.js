@@ -124,6 +124,9 @@ Template.myCocktails.helpers({
   },
   editing_drink:function(){
     return Session.get("drink_to_edit");
+  },
+  username:function(){
+    return Meteor.user().username || Meteor.user().profile.name;
   }
 
 });
